@@ -14,7 +14,9 @@ def init(rvcmodel, rvcindex):
     rvc.set_params(f0method="rmvpe")
 
     separator = Separator()
-    separator.load_model("model_bs_roformer_ep_368_sdr_12.9628.ckpt")
+    # separator.load_model("model_bs_roformer_ep_368_sdr_12.9628.ckpt")
+    # separator.load_model("mel_band_roformer_kim_ft3_unwa.ckpt")
+    separator.load_model("vocals_mel_band_roformer.ckpt")
     dereverb = Separator()
     dereverb.load_model("dereverb_mel_band_roformer_anvuew_sdr_19.1729.ckpt")
 
@@ -59,12 +61,24 @@ def addEffects(input, output):
                 # Write the output to our output file:
                 o.write(effected)
 
+def mixAudio(wav1, wav2, mixed_path):
+    sound1 = AudioSegment.from_wav(wav1)
+    sound2 = AudioSegment.from_wav(wav2)
+
+    # Mix the two audio files
+    mixed = sound1.overlay(sound2)
+
+    # Export mixed audio
+    mixed.export(mixed_path, format="wav")
 
 # generate
 def generateAudioTrack(url, outputfile = "output.wav"):
     ytdownload(url)
     output_files = separator.separate('song.wav')
     dereverb_files = dereverb.separate(output_files[1])
+
+    # mix instrumental with dereverbed for better inst sound
+    mixAudio(output_files[0], dereverb_files[0], output_files[0])
 
     rvc.infer_file(dereverb_files[1], outputfile)
     song = AudioSegment.from_wav(outputfile)

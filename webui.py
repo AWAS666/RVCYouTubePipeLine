@@ -22,16 +22,6 @@ def get_index_files():
     return list_files_with_ext(RVC_FOLDER, ".index")
 
 
-def mixAudio(wav1, wav2, mixed_path):
-    sound1 = AudioSegment.from_wav(wav1)
-    sound2 = AudioSegment.from_wav(wav2)
-
-    # Mix the two audio files
-    mixed = sound1.overlay(sound2)
-
-    # Export mixed audio
-    mixed.export(mixed_path, format="wav")
-
 
 def generate_func(pth_file, index_file, url):
 
@@ -45,12 +35,12 @@ def generate_func(pth_file, index_file, url):
     )
 
     mixed_path = os.path.join(output_folder, "mixed.wav")
-    mixAudio(wav1, wav2, mixed_path)
+    audiogenerate.mixAudio(wav1, wav2, mixed_path)
 
     effects = os.path.join(output_folder, "effects.wav")
     mixedEffects = os.path.join(output_folder, "mixedEffects.wav")
     audiogenerate.addEffects(wav1, effects)
-    mixAudio(effects, wav2, mixedEffects)
+    audiogenerate.mixAudio(effects, wav2, mixedEffects)
 
     # clean up the rest of the files -> add delete option
     remfiles = list_files_with_ext(".", ".wav")

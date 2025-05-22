@@ -27,6 +27,10 @@ Just copy your model you trained using the [rvc main repo](https://github.com/RV
 python3 webui.py
 ```
 
+## Models
+List by best vocals: 
+audio-separator -l --list_filter=vocals --list_limit=5
+
 ## Todo
 - [x] basic pipeline in script
 - [x] fastapi endpoint
